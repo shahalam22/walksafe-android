@@ -59,7 +59,7 @@ class GuidanceService : LifecycleService() {
     @Inject lateinit var prefsRepo: UserPrefsRepository
     @Inject lateinit var holder: GuidanceStateHolder
     @Inject lateinit var speaker: Speaker
-    @Inject @ApplicationScope lateinit var appScope: CoroutineScope
+    @Inject @field:ApplicationScope lateinit var appScope: CoroutineScope
 
     private lateinit var camera: FrameCapture
     private lateinit var shake: ShakeDetector
