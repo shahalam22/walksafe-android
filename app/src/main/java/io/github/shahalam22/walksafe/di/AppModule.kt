@@ -47,7 +47,12 @@ object AppModule {
     @Singleton
     fun provideSupabase(json: Json): SupabaseClient =
         createSupabaseClient(BuildConfig.SUPABASE_URL, BuildConfig.SUPABASE_KEY) {
-            install(Auth)
+            install(Auth) {
+                // By default the library pauses the session whenever the app leaves the
+                // screen (including the screen turning off). Guidance runs in the
+                // background and needs the session, so keep it active and refreshed.
+                enableLifecycleCallbacks = false
+            }
             install(Postgrest)
             defaultSerializer = KotlinXSerializer(json)
         }

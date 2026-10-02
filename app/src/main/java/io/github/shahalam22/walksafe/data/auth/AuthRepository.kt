@@ -64,8 +64,12 @@ class AuthRepository @Inject constructor(private val supabase: SupabaseClient) {
 
     fun accessToken(): String? = supabase.auth.currentAccessTokenOrNull()
 
+    /** Refreshes the token; if the session is missing from memory, reloads it from the phone. */
     suspend fun refresh() {
-        runCatching { supabase.auth.refreshCurrentSession() }
+        runCatching {
+            if (supabase.auth.currentSessionOrNull() == null) supabase.auth.loadFromStorage()
+            else supabase.auth.refreshCurrentSession()
+        }
     }
 
     private fun UserSession.toUser(): SignedInUser {
