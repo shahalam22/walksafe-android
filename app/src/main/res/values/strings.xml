@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">WalkSafe</string>
+    <string name="notification_channel">Guidance</string>
+    <string name="notification_title">WalkSafe is guiding</string>
+    <string name="notification_stop">Stop</string>
+</resources>
