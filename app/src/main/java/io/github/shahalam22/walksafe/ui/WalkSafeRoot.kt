@@ -12,6 +12,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.shahalam22.walksafe.ui.admin.AdminScreen
 import io.github.shahalam22.walksafe.ui.guide.GuideScreen
 import io.github.shahalam22.walksafe.ui.login.LoginScreen
+import io.github.shahalam22.walksafe.ui.login.ResetPasswordScreen
 
 @Composable
 fun WalkSafeRoot(viewModel: RootViewModel = hiltViewModel()) {
@@ -19,6 +20,7 @@ fun WalkSafeRoot(viewModel: RootViewModel = hiltViewModel()) {
     when (val s = state) {
         RootState.Loading -> Box(Modifier.fillMaxSize().background(Color.Black))
         RootState.SignedOut -> LoginScreen()
+        RootState.ResetPassword -> ResetPasswordScreen()
         is RootState.Guide -> GuideScreen(
             user = s.user,
             onOpenAdmin = viewModel::showAdmin,

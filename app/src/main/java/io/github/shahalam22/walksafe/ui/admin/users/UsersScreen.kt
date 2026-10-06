@@ -10,6 +10,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
@@ -40,7 +45,8 @@ fun UsersScreen(viewModel: UsersViewModel = hiltViewModel()) {
 
     LazyColumn(contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         item {
-            SectionCard("Add a blind user") {
+            SectionCard("Add a user") {
+                RoleDropdown(state.role, viewModel::onRole)
                 OutlinedTextField(state.name, viewModel::onName, Modifier.fillMaxWidth(),
                     label = { Text("Name") }, placeholder = { Text("e.g. Rahim") }, singleLine = true)
                 OutlinedTextField(state.email, viewModel::onEmail, Modifier.fillMaxWidth(),
@@ -103,6 +109,37 @@ fun UsersScreen(viewModel: UsersViewModel = hiltViewModel()) {
             },
             dismissButton = { TextButton(onClick = { deleteFor = null }) { Text("Cancel") } },
         )
+    }
+}
+
+private val ROLES = listOf(ROLE_USER to "User", ROLE_ADMIN to "Admin")
+
+/** User type: a user who walks (blind) or an admin. */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun RoleDropdown(role: String, onRole: (String) -> Unit) {
+    var expanded by remember { mutableStateOf(false) }
+    ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = it }) {
+        OutlinedTextField(
+            value = ROLES.first { it.first == role }.second,
+            onValueChange = {},
+            readOnly = true,
+            singleLine = true,
+            label = { Text("User type") },
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+            modifier = Modifier.fillMaxWidth().menuAnchor(MenuAnchorType.PrimaryNotEditable),
+        )
+        ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            ROLES.forEach { (value, label) ->
+                DropdownMenuItem(
+                    text = { Text(label) },
+                    onClick = {
+                        onRole(value)
+                        expanded = false
+                    },
+                )
+            }
+        }
     }
 }
 

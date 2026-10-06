@@ -13,8 +13,12 @@ and **keeps guiding with the screen off**.
   step left, …). Tap again, shake the phone, or use the notification's Stop button to stop.
   The screen can be turned off while guiding.
 - **Admin:** session dashboard (stats, charts, speed profile, CSV export to Downloads),
-  blind-user accounts (add, new password, turn on/off, delete), the server address, and
-  phone setup steps. Admins can also open the guidance screen.
+  accounts (add a user or another admin; new password, turn on/off, delete for users), the
+  server address, and phone setup steps. Admins can also open the guidance screen.
+- **Forgot password:** after a wrong sign-in, **Forgot password?** emails a reset link. Opening
+  it on the phone opens WalkSafe at a **New password** screen; after saving, sign in again.
+  The link is `walksafe://reset-password`, which must be in Supabase's allowed Redirect URLs
+  (see the main repo's README, "Supabase (once)").
 
 It uses the same backend as the web app: the WalkSafe server on Colab for guidance and
 user management, and Supabase for sign-in, session data and the server address.

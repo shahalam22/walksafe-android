@@ -56,13 +56,15 @@ class WalkSafeApi @Inject constructor(
             body = buildJsonObject { put("session_id", sessionId) }.toString(), timeoutMs = 5_000)
     }
 
-    // ── Admin: blind-user accounts (the server holds the Supabase secret key) ─
+    // ── Admin: user and admin accounts (the server holds the Supabase secret key) ─
 
-    suspend fun createUser(base: String, email: String, password: String, displayName: String) {
+    /** [role] is "blind" (a user who walks) or "admin". */
+    suspend fun createUser(base: String, email: String, password: String, displayName: String, role: String) {
         call(base, HttpMethod.Post, "/api/admin/users", body = buildJsonObject {
             put("email", email)
             put("password", password)
             put("display_name", displayName)
+            put("role", role)
         }.toString())
     }
 

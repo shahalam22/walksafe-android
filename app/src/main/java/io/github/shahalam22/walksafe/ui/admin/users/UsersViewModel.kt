@@ -26,13 +26,17 @@ data class UsersUiState(
     val name: String = "",
     val email: String = "",
     val password: String = "",
+    val role: String = ROLE_USER,
     val adding: Boolean = false,
     val formMessage: Message? = null,
     val actionMessage: Message? = null,
 )
 
+const val ROLE_USER = "blind"
+const val ROLE_ADMIN = "admin"
+
 /**
- * Blind-user accounts. The list comes from Supabase; adding, changing and
+ * User and admin accounts. The list comes from Supabase; adding, changing and
  * deleting go through the WalkSafe server, which holds the secret key.
  */
 @HiltViewModel
@@ -52,6 +56,7 @@ class UsersViewModel @Inject constructor(
     fun onName(v: String) = _state.update { it.copy(name = v, formMessage = null) }
     fun onEmail(v: String) = _state.update { it.copy(email = v, formMessage = null) }
     fun onPassword(v: String) = _state.update { it.copy(password = v, formMessage = null) }
+    fun onRole(v: String) = _state.update { it.copy(role = v, formMessage = null) }
 
     fun reload() {
         viewModelScope.launch {
@@ -74,11 +79,16 @@ class UsersViewModel @Inject constructor(
         }
         _state.update { it.copy(adding = true, formMessage = Message("Adding…", ok = true)) }
         viewModelScope.launch {
-            val result = runServer { api.createUser(it, s.email.trim(), s.password, s.name.trim()) }
+            val result = runServer { api.createUser(it, s.email.trim(), s.password, s.name.trim(), s.role) }
             _state.update {
                 if (result == null) {
-                    it.copy(adding = false, name = "", email = "", password = "",
-                        formMessage = Message("Added ${s.email.trim()}. Sign in with it on their phone.", ok = true))
+                    val done = if (s.role == ROLE_ADMIN) {
+                        "Added ${s.email.trim()} as an admin. They can sign in to the dashboard."
+                    } else {
+                        "Added ${s.email.trim()}. Sign in with it on their phone."
+                    }
+                    it.copy(adding = false, name = "", email = "", password = "", role = ROLE_USER,
+                        formMessage = Message(done, ok = true))
                 } else {
                     it.copy(adding = false, formMessage = Message(result, ok = false))
                 }
